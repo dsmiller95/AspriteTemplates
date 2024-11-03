@@ -42,11 +42,11 @@ app.MapGet("/item/{id}", async (ItemRepository repository, [FromRoute] Guid id) 
 });
 app.MapPost("/item", async (ItemRepository repository, [FromBody] Item order) =>
 {
-    return repository.CreateOrder(order);
+    return await repository.CreateOrder(order);
 });
 app.MapPut("/item", async (ItemRepository repository, [FromBody] Item order) =>
 {
-    return repository.UpdateOrder(order);
+    return await repository.UpdateOrder(order);
 });
 app.MapDelete("/item/{id}", async (ItemRepository repository, [FromRoute] Guid id) =>
 {

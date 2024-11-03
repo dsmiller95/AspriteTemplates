@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sql = builder.AddSqlServer("sql").WithDataVolume("sql-server-data");
+var sql = builder.AddSqlServer("sql").WithDataVolume("sql-server-data-OrderManager");
 var sqldb = sql.AddDatabase("sqldb");
 
 var apiService = builder.AddProject<Projects.OrderManager_ApiService>("apiservice")

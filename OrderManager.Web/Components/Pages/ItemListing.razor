@@ -17,35 +17,57 @@
 }
 else
 {
+    
     <table class="table">
         <thead>
-            <tr>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var item in items)
-            {
-                <tr>
-                    <td>@item.ItemName</td>
-                    <td><button class="btn btn-primary" @onclick="() => ItemClicked(item)">click item</button></td>
-                </tr>
-            }
+        @foreach (var item in items)
+        {
+            <tr>
+                <td>@item.ItemName</td>
+                <td><button class="btn btn-primary" @onclick="() => DeleteItem(item)">Delete</button></td>
+            </tr>
+        }
         </tbody>
     </table>
+    
+    <h2>Create New Item</h2>
+    <EditForm Model="newItem" OnValidSubmit="CreateItem">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label for="itemName" class="form-label">Item Name</label>
+            <InputText id="itemName" class="form-control" @bind-Value="newItem.ItemName" />
+        </div>
+        <button type="submit" class="btn btn-success">Create</button>
+    </EditForm>
 }
+
 
 @code {
     private Item[]? items;
+    private Item newItem = new Item();
 
     protected override async Task OnInitializedAsync()
     {
         items = await OrderManagerApi.GetItemsAsync();
     }
-    async Task ItemClicked(Item item)
+    async Task DeleteItem(Item item)
     {
-        await Js.InvokeVoidAsync("console.log", "Item clicked: " + item.ItemName);
+        await OrderManagerApi.DeleteItemAsync(item.Id);
+        items = await OrderManagerApi.GetItemsAsync();
+    }
+    
+    async Task CreateItem()
+    {
+        await OrderManagerApi.CreateItemAsync(newItem);
+        newItem = new Item(); // Reset the form
+        items = await OrderManagerApi.GetItemsAsync();
     }
 }
 
