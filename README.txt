@@ -1,0 +1,1 @@
+These are templates meant to be used to get a project up and running quickly, with good defaults and ready to begin working.

@@ -1,0 +1,79 @@
+{
+    "author": "Dan Miller",
+    "name": "Aspire CRUD SqlServer",
+    "description": "A Solution which hosts a simple CRUD api and a blazor UI over it, backed by SqlServer",
+    "identity": "DanMiller.AspireCRUD.1.0",
+    "shortName": "aspirecrud",
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "OrderManager",
+    "symbols": {
+        "DataName": {
+            "type": "parameter",
+            "description": "The name of the starter Data Item.",
+            "datatype": "text",
+			"replaces": "DataItem",
+			"fileRename": "DataItem",
+			"defaultValue": "DataItem"
+        },
+		"FirstChar": {
+			"type": "generated",
+			"generator": "regex",
+            "datatype": "string",
+			"parameters": {
+				"source": "DataName",
+				"steps": [
+				{
+					"regex": "^([A-Z])(.*)",
+					"replacement": "$1"
+				}
+				]
+			}
+		},
+		"FirstCharLower": {
+			"type": "generated",
+			"generator": "casing",
+            "datatype": "string",
+			"parameters": {
+				"source": "FirstChar",
+				"toLower": true
+			}
+		},
+		"RemainingChars": {
+			"type": "generated",
+			"generator": "regex",
+            "datatype": "string",
+			"parameters": {
+				"source": "DataName",
+				"steps": [
+				{
+					"regex": "^([A-Z])(.*)",
+					"replacement": "$2"
+				}
+				]
+			}
+		},
+        "RouteName": {
+            "type": "generated",
+			"generator": "join",
+            "datatype": "string",
+			"replaces": "dataItem",
+			"parameters": {
+				"symbols": [
+					{
+						"type": "ref",
+						"value": "FirstCharLower"
+					},
+					{
+						"type": "ref",
+						"value": "RemainingChars"
+					}
+				],
+				"separator": "",
+				"removeEmptyValues": true
+			}
+        }
+    }
+}
