@@ -1,80 +1,25 @@
+using Microsoft.EntityFrameworkCore;
 using OrderManager.ApiService.Models;
 
 namespace OrderManager.ApiService;
 
-public class OrderRepository
+public class OrderRepository(OrderManagerDbContext dbContext)
 {
     public async Task<List<Order>> GetOrders()
     {
-        return new List<Order>
-        {
-            new Order
-            {
-                Id = Guid.NewGuid(),
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductId = Guid.NewGuid(),
-                        Quantity = 1
-                    },
-                    new OrderItem
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductId = Guid.NewGuid(),
-                        Quantity = 2
-                    }
-                }
-            },
-            new Order
-            {
-                Id = Guid.NewGuid(),
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductId = Guid.NewGuid(),
-                        Quantity = 3
-                    },
-                    new OrderItem
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductId = Guid.NewGuid(),
-                        Quantity = 4
-                    }
-                }
-            }
-        };
+        return await dbContext.Orders.ToListAsync();
     }
     
-    public async Task<Order> GetOrder(Guid id)
+    public async Task<Order?> GetOrder(Guid id)
     {
-        return new Order
-        {
-            Id = id,
-            OrderItems = new List<OrderItem>
-            {
-                new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductId = Guid.NewGuid(),
-                    Quantity = 1
-                },
-                new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductId = Guid.NewGuid(),
-                    Quantity = 2
-                }
-            }
-        };
+        return await dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
     }
     
     public async Task<Order> CreateOrder(Order order)
     {
-        return order;
+        var result = await dbContext.Orders.AddAsync(order);
+        await dbContext.SaveChangesAsync();
+        return result.Entity;
     }
     
 }
