@@ -12,6 +12,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddOutputCache();
 
+// in-memory singleton cart service
+builder.Services.AddSingleton<CartService>();
+
 builder.Services.AddHttpClient<WeatherApiClient>(client =>
     {
         // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.

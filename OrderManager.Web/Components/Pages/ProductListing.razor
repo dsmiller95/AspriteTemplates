@@ -1,9 +1,10 @@
 ﻿@page "/products"
+@rendermode InteractiveServer
 @using OrderManager.ApiService.Models
-@attribute [StreamRendering(true)]
-@attribute [OutputCache(Duration = 5)]
 
 @inject OrdersApiClient OrdersApi
+@inject CartService Cart
+@inject IJSRuntime Js
 
 <PageTitle>Products</PageTitle>
 
@@ -11,7 +12,7 @@
 
 <p>This component lists all products from the products api.</p>
 
-@if (products == null)
+@if (products == null || cart == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -25,6 +26,7 @@ else
                 <th>Price ($)</th>
                 <th>In Stock</th>
                 <th></th>
+                <th>In Cart</th>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +38,10 @@ else
                     <td>@product.Price</td>
                     <td>@product.StockQuantity</td>
                     <td>
-                        <button disabled="@(!CanAddToCart(product))" @onclick="() => AddToCart(product)">Add to Cart</button>
+                        <button disabled="@(!cart.CanAddToCart(product, 1))" @onclick="() => AddToCart(product)">Add to Cart</button>
+                    </td>
+                    <td>
+                        @cart.GetAmountInCart(product)
                     </td>
                 </tr>
             }
@@ -46,39 +51,25 @@ else
 
 @code {
     private Product[]? products;
-
-    private Dictionary<Guid, CartItem> cart = new();
-
-    private record CartItem(Product Item, int Quantity);
+    private Cart? cart;
+    private int currentCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         products = await OrdersApi.GetProductAsync();
+        cart = await Cart.GetCartAsync();
     }
     
-    private bool CanAddToCart(Product product)
+    async Task AddToCart(Product product)
     {
-        if (product.StockQuantity <= 0) return false;
-
-        var inCart = 0;
-        if(cart.TryGetValue(product.Id, out var cartItem))
+        if (cart == null)
         {
-            inCart = cartItem.Quantity;
+            throw new InvalidOperationException();
         }
-
-        return inCart < product.StockQuantity;
+        
+        cart.AddToCart(product, 1);
+        await Cart.SetCartAsync(cart);
     }
 
-    private async Task AddToCart(Product product)
-    {
-        if(cart.TryGetValue(product.Id, out var cartItem))
-        {
-            cart[product.Id] = new CartItem(product, cartItem.Quantity + 1);
-        }
-        else
-        {
-            cart.Add(product.Id, new CartItem(product, 1));
-        }
-    }
 }
 
