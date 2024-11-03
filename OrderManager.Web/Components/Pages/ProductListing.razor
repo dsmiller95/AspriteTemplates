@@ -1,0 +1,84 @@
+﻿@page "/products"
+@using OrderManager.ApiService.Models
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject OrdersApiClient OrdersApi
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component lists all products from the products api.</p>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price ($)</th>
+                <th>In Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                    <td>@product.StockQuantity</td>
+                    <td>
+                        <button disabled="@(!CanAddToCart(product))" @onclick="() => AddToCart(product)">Add to Cart</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Product[]? products;
+
+    private Dictionary<Guid, CartItem> cart = new();
+
+    private record CartItem(Product Item, int Quantity);
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await OrdersApi.GetProductAsync();
+    }
+    
+    private bool CanAddToCart(Product product)
+    {
+        if (product.StockQuantity <= 0) return false;
+
+        var inCart = 0;
+        if(cart.TryGetValue(product.Id, out var cartItem))
+        {
+            inCart = cartItem.Quantity;
+        }
+
+        return inCart < product.StockQuantity;
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        if(cart.TryGetValue(product.Id, out var cartItem))
+        {
+            cart[product.Id] = new CartItem(product, cartItem.Quantity + 1);
+        }
+        else
+        {
+            cart.Add(product.Id, new CartItem(product, 1));
+        }
+    }
+}
+
