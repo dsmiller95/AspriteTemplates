@@ -31,10 +31,10 @@ public class DataItemRepository(OrderManagerDbContext dbContext)
     
     public async Task DeleteDataItem(Guid id)
     {
-        var item = await dbContext.DataItems.FirstOrDefaultAsync(x => x.Id == id);
-        if(item != null)
+        var dataItem = await dbContext.DataItems.FirstOrDefaultAsync(x => x.Id == id);
+        if(dataItem != null)
         {
-            dbContext.DataItems.Remove(item);
+            dbContext.DataItems.Remove(dataItem);
             await dbContext.SaveChangesAsync();
         }
     }
