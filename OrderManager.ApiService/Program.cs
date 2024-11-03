@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderManager.ApiService;
 using OrderManager.ApiService.Models;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
+builder.AddSqlServerDbContext<OrderManagerDbContext>("sqldb");
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -17,6 +19,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// run ef migrations on startup in
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OrderManagerDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

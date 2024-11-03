@@ -1,55 +1,25 @@
+using Microsoft.EntityFrameworkCore;
 using OrderManager.ApiService.Models;
 
 namespace OrderManager.ApiService;
 
-public class ProductRepository
+public class ProductRepository(OrderManagerDbContext dbContext)
 {
     public async Task<List<Product>> GetProducts()
     {
-        return new List<Product>
-        {
-            new Product
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product 1",
-                Description = "Description 1",
-                Price = 10.00m,
-                StockQuantity = 100
-            },
-            new Product
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product 2",
-                Description = "Description 2",
-                Price = 20.00m,
-                StockQuantity = 200
-            },
-            new Product
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product 3",
-                Description = "Description 3",
-                Price = 30.00m,
-                StockQuantity = 300
-            }
-        };
+        return await dbContext.Products.ToListAsync();
     }
     
-    public async Task<Product> GetProduct(Guid id)
+    public async Task<Product?> GetProduct(Guid id)
     {
-        return new Product
-        {
-            Id = id,
-            Name = "Product 1",
-            Description = "Description 1",
-            Price = 10.00m,
-            StockQuantity = 100
-        };
+        return await dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
     }
     
     public async Task<Product> CreateProduct(Product product)
     {
-        return product;
+        var result = await dbContext.Products.AddAsync(product);
+        await dbContext.SaveChangesAsync();
+        return result.Entity;
     }
     
 }
