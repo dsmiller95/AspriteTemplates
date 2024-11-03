@@ -1,0 +1,51 @@
+﻿@page "/items"
+@using OrderManager.Models
+@rendermode InteractiveServer
+
+@inject OrderManagerApiClient OrderManagerApi
+@inject IJSRuntime Js
+
+<PageTitle>Products</PageTitle>
+
+<h1>Items</h1>
+
+<p>This component lists all items from the OrderManager api.</p>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.ItemName</td>
+                    <td><button class="btn btn-primary" @onclick="() => ItemClicked(item)">click item</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Item[]? items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await OrderManagerApi.GetItemsAsync();
+    }
+    async Task ItemClicked(Item item)
+    {
+        await Js.InvokeVoidAsync("console.log", "Item clicked: " + item.ItemName);
+    }
+}
+

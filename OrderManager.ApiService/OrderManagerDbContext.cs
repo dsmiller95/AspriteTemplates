@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using OrderManager.ApiService.Models;
+using OrderManager.Models;
 
 namespace OrderManager.ApiService;
 
@@ -9,7 +9,5 @@ public class OrderManagerDbContext : DbContext
     {
     }
 
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Item> Items { get; set; }
 }

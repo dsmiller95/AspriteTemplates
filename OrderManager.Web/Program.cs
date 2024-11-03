@@ -12,17 +12,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddOutputCache();
 
-// in-memory singleton cart service
-builder.Services.AddSingleton<CartService>();
-
-builder.Services.AddHttpClient<WeatherApiClient>(client =>
-    {
-        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://apiservice");
-    });
-
-builder.Services.AddHttpClient<OrdersApiClient>(client =>
+builder.Services.AddHttpClient<OrderManagerApiClient>(client =>
     {
         // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
         // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
