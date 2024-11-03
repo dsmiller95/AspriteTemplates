@@ -1,12 +1,13 @@
 {
-    "author": "Dan Miller",
     "name": "Aspire CRUD SqlServer",
+    "author": "Dan Miller",
+    "classifications": [ ".NET Aspire", "Cloud", "Blazor", "Web API", "API", "Service", "Crud", "Sql Server", "EF Core" ],
     "description": "A Solution which hosts a simple CRUD api and a blazor UI over it, backed by SqlServer",
     "identity": "DanMiller.AspireCRUD.1.0",
-    "shortName": "aspirecrud",
+    "shortName": "aspire-crud",
     "tags": {
         "language": "C#",
-        "type": "project"
+        "type": "solution",
     },
     "sourceName": "OrderManager",
     "symbols": {
