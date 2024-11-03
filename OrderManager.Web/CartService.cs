@@ -2,7 +2,7 @@ using OrderManager.ApiService.Models;
 
 namespace OrderManager.Web;
 
-public class Cart
+public class CartModel
 {
     public Dictionary<Guid, CartItem> CartItems { get; set; } = new();
     
@@ -10,6 +10,8 @@ public class Cart
     {
         return CartItems.GetValueOrDefault(productId);
     }
+    
+    public int TotalItems => CartItems.Values.Sum(x => x.Quantity);
     
     public bool CanAddToCart(Product product, int quantity)
     {
@@ -39,14 +41,14 @@ public record CartItem(Product Item, int Quantity);
 
 public class CartService
 {
-    private Cart InMemoryCart { get; set; } = new();
-    public async Task<Cart> GetCartAsync()
+    private CartModel InMemoryCartModel { get; set; } = new();
+    public async Task<CartModel> GetCartAsync()
     {
-        return InMemoryCart;
+        return InMemoryCartModel;
     }
 
-    public async Task SetCartAsync(Cart cart)
+    public async Task SetCartAsync(CartModel cartModel)
     {
-        InMemoryCart = cart;
+        InMemoryCartModel = cartModel;
     }
 }

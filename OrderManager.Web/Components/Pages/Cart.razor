@@ -1,0 +1,53 @@
+﻿@page "/cart"
+@rendermode InteractiveServer
+
+@inject CartService CartService
+
+<PageTitle>Cart</PageTitle>
+
+<h1>Cart</h1>
+
+<p>This component lists all products from the products api.</p>
+
+@if (cart == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (cart.TotalItems <= 0)
+{
+    <p><em>Your cart is empty.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price ($)</th>
+            <th>Total ($)</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in cart.CartItems.Values)
+        {
+            <tr>
+                <td>@item.Item.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Item.Price</td>
+                <td>@(item.Quantity * item.Item.Price)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private CartModel? cart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cart = await CartService.GetCartAsync();
+    }
+}
+
