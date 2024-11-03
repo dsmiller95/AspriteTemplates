@@ -7,10 +7,10 @@ public class OrderManagerApiClient(HttpClient httpClient)
 {
     public async Task<DataItem[]> GetDataItemsAsync(int maxItems = 10, CancellationToken cancellationToken = default)
     {
-        var productList =  await httpClient.GetFromJsonAsAsyncEnumerable<DataItem>("/dataItem", cancellationToken)
+        var dataItemList =  await httpClient.GetFromJsonAsAsyncEnumerable<DataItem>("/dataItem", cancellationToken)
             .Take(maxItems)
             .ToListAsync(cancellationToken);
-        return productList.ToArray()!;
+        return dataItemList.ToArray()!;
     }
     
     public async Task DeleteDataItemAsync(Guid id, CancellationToken cancellationToken = default)
