@@ -9,5 +9,5 @@ public class OrderManagerDbContext : DbContext
     {
     }
 
-    public DbSet<Item> Items { get; set; }
+    public DbSet<DataItem> DataItems { get; set; }
 }

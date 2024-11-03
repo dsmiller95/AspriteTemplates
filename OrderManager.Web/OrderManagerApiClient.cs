@@ -5,24 +5,24 @@ namespace OrderManager.Web;
 
 public class OrderManagerApiClient(HttpClient httpClient)
 {
-    public async Task<Item[]> GetItemsAsync(int maxItems = 10, CancellationToken cancellationToken = default)
+    public async Task<DataItem[]> GetDataItemsAsync(int maxItems = 10, CancellationToken cancellationToken = default)
     {
-        var productList =  await httpClient.GetFromJsonAsAsyncEnumerable<Item>("/item", cancellationToken)
+        var productList =  await httpClient.GetFromJsonAsAsyncEnumerable<DataItem>("/dataItem", cancellationToken)
             .Take(maxItems)
             .ToListAsync(cancellationToken);
         return productList.ToArray()!;
     }
     
-    public async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task DeleteDataItemAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await httpClient.DeleteAsync($"/item/{id}", cancellationToken);
+        await httpClient.DeleteAsync($"/dataItem/{id}", cancellationToken);
     }
     
-    public async Task<Item> CreateItemAsync(Item item, CancellationToken cancellationToken = default)
+    public async Task<DataItem> CreateDataItemAsync(DataItem dataItem, CancellationToken cancellationToken = default)
     {
-        var response = await httpClient.PostAsJsonAsync("/item", item, cancellationToken);
-        var result = await response.Content.ReadFromJsonAsync<Item>(cancellationToken: cancellationToken);
-        if(result == null) throw new Exception("Failed to create item");
+        var response = await httpClient.PostAsJsonAsync("/dataItem", dataItem, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<DataItem>(cancellationToken: cancellationToken);
+        if(result == null) throw new Exception("Failed to create dataItem");
         return result;
     }
 }

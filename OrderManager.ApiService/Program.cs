@@ -12,14 +12,14 @@ builder.AddSqlServerDbContext<OrderManagerDbContext>("sqldb");
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-builder.Services.AddScoped<ItemRepository>();
+builder.Services.AddScoped<DataItemRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// run ef migrations on startup in
+// run ef migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<OrderManagerDbContext>();
@@ -32,25 +32,25 @@ app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
-app.MapGet("/item", async (ItemRepository repository) =>
+app.MapGet("/dataItem", async (DataItemRepository repository) =>
 {
-    return await repository.GetOrders();
+    return await repository.GetDataItems();
 });
-app.MapGet("/item/{id}", async (ItemRepository repository, [FromRoute] Guid id) =>
+app.MapGet("/dataItem/{id}", async (DataItemRepository repository, [FromRoute] Guid id) =>
 {
-    return await repository.GetOrder(id);
+    return await repository.GetDataItem(id);
 });
-app.MapPost("/item", async (ItemRepository repository, [FromBody] Item order) =>
+app.MapPost("/dataItem", async (DataItemRepository repository, [FromBody] DataItem dataItem) =>
 {
-    return await repository.CreateOrder(order);
+    return await repository.CreateDataItem(dataItem);
 });
-app.MapPut("/item", async (ItemRepository repository, [FromBody] Item order) =>
+app.MapPut("/dataItem", async (DataItemRepository repository, [FromBody] DataItem dataItem) =>
 {
-    return await repository.UpdateOrder(order);
+    return await repository.UpdateDataItem(dataItem);
 });
-app.MapDelete("/item/{id}", async (ItemRepository repository, [FromRoute] Guid id) =>
+app.MapDelete("/dataItem/{id}", async (DataItemRepository repository, [FromRoute] Guid id) =>
 {
-    await repository.DeleteOrder(id);
+    await repository.DeleteDataItem(id);
     return Results.NoContent();
 });
 

@@ -12,7 +12,7 @@ using OrderManager.ApiService;
 namespace OrderManager.ApiService.Migrations
 {
     [DbContext(typeof(OrderManagerDbContext))]
-    [Migration("20241103223611_InitialMigration")]
+    [Migration("20241103225832_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -25,19 +25,19 @@ namespace OrderManager.ApiService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OrderManager.Models.Item", b =>
+            modelBuilder.Entity("OrderManager.Models.DataItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ItemName")
+                    b.Property<string>("DataItemName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items");
+                    b.ToTable("DataItems");
                 });
 #pragma warning restore 612, 618
         }

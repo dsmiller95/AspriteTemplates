@@ -5,13 +5,13 @@
 @inject OrderManagerApiClient OrderManagerApi
 @inject IJSRuntime Js
 
-<PageTitle>Products</PageTitle>
+<PageTitle>DataItems</PageTitle>
 
-<h1>Items</h1>
+<h1>DataItems</h1>
 
-<p>This component lists all items from the OrderManager api.</p>
+<p>This component lists all dataItems from the OrderManager api.</p>
 
-@if (items == null)
+@if (dataItems == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -26,23 +26,23 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in items)
+        @foreach (var dataItem in dataItems)
         {
             <tr>
-                <td>@item.ItemName</td>
-                <td><button class="btn btn-primary" @onclick="() => DeleteItem(item)">Delete</button></td>
+                <td>@dataItem.DataItemName</td>
+                <td><button class="btn btn-primary" @onclick="() => DeleteDataItem(dataItem)">Delete</button></td>
             </tr>
         }
         </tbody>
     </table>
     
     <h2>Create New Item</h2>
-    <EditForm Model="newItem" OnValidSubmit="CreateItem">
+    <EditForm Model="_newDataItem" OnValidSubmit="CreateDataItem">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="mb-3">
-            <label for="itemName" class="form-label">Item Name</label>
-            <InputText id="itemName" class="form-control" @bind-Value="newItem.ItemName" />
+            <label for="itemName" class="form-label">DataItem Name</label>
+            <InputText id="itemName" class="form-control" @bind-Value="_newDataItem.DataItemName" />
         </div>
         <button type="submit" class="btn btn-success">Create</button>
     </EditForm>
@@ -50,24 +50,24 @@ else
 
 
 @code {
-    private Item[]? items;
-    private Item newItem = new Item();
+    private DataItem[]? dataItems;
+    private DataItem _newDataItem = new DataItem();
 
     protected override async Task OnInitializedAsync()
     {
-        items = await OrderManagerApi.GetItemsAsync();
+        dataItems = await OrderManagerApi.GetDataItemsAsync();
     }
-    async Task DeleteItem(Item item)
+    async Task DeleteDataItem(DataItem dataItem)
     {
-        await OrderManagerApi.DeleteItemAsync(item.Id);
-        items = await OrderManagerApi.GetItemsAsync();
+        await OrderManagerApi.DeleteDataItemAsync(dataItem.Id);
+        dataItems = await OrderManagerApi.GetDataItemsAsync();
     }
     
-    async Task CreateItem()
+    async Task CreateDataItem()
     {
-        await OrderManagerApi.CreateItemAsync(newItem);
-        newItem = new Item(); // Reset the form
-        items = await OrderManagerApi.GetItemsAsync();
+        await OrderManagerApi.CreateDataItemAsync(_newDataItem);
+        _newDataItem = new DataItem(); // Reset the form
+        dataItems = await OrderManagerApi.GetDataItemsAsync();
     }
 }
 
